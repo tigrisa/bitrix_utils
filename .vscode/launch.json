@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Day Checker",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/add_task/day_checker.py",
+            "console": "integratedTerminal",
+            "args": ["--date", "today"]
+            // "cwd": "${workspaceFolder}/day_checker"
+        },
+        {
+            "name": "Python: Add Task",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/add_task/add_task.py",
+            "console": "integratedTerminal",
+            "args": ["--date", "2024-01-16", "--randdelay", "3"],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "add-task"
+version = "0.1.0"
+description = "Add task to the bitrix if it is workday or shortened_workday"
+authors = ["Дмитриева (Заболотских) Валентина Анатольевна <dmitrieva_va@ascon.ru>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+odfpy = "^1.4.1"
+
+[tool.poetry.scripts]
+add_task = "add_task.add_task:main"
+day_checker = "add_task.day_checker:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
