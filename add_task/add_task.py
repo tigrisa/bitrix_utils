@@ -83,8 +83,9 @@ def main():
         if date_str not in last_records:
             hours = "8" if day_type == "workday" else "7"
             # Add a task for today
-            logger.info(f"Adding a task for {date_str} for {hours} hours.")
-            run_script("tasks.exe", ["--date", date_str, "--time", hours])
+            at_time = datetime.datetime.now().strftime("%H:%M:%S")
+            logger.info(f"Adding a task for {date_str} at {at_time} for {hours} hours.")
+            run_script("tasks.exe", ["--date", date_str, "--time", hours, "--attime", at_time])
 
 if __name__ == "__main__":
     main()
