@@ -41,7 +41,7 @@ or just run make_scheduler.\* file
 -   To add the scheduler to Windows, run the make_scheduler.bat file
 -   To remove the scheduler in Windows, run the remove_scheduler.bat file
 -   To add the scheduler to Linux, run the make_scheduler.sh file
--   To remove the scheduler in Linux, run the remove_scheduler.bat file
+-   To remove the scheduler in Linux, run the remove_scheduler.sh file
 -   To run the script manually, use the following command:
 
 ```bash
