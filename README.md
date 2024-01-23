@@ -28,6 +28,7 @@ The scheduler will execute `add_task --date today --randdelay 59` every day at 1
 -   Install python, pip and pipx
     -   For win: pip install pipx
     -   For linux: sudo apt install pipx && pipx ensurepath
+-   Install a project from this repo https://gitlab-klmn.ascon.net/kondrikov/tasks
 -   For the Linux scheduler your system must use systemd
 
 ## Installation
