@@ -25,7 +25,7 @@ set "EXECUTABLE_NAME=add_task"
 set "ARGUMENTS=--date today --randdelay 59"
 
 :: Create a task in Task Scheduler with the working directory
-schtasks /create /tn "%TASK_NAME%" /tr "cmd /c cd /d %WORKING_DIR% && %EXECUTABLE_NAME% %ARGUMENTS%" /sc daily /st 09:00 /f
+schtasks /create /tn "%TASK_NAME%" /tr "cmd /c cd /d %WORKING_DIR% && %EXECUTABLE_NAME% %ARGUMENTS%" /sc daily /st 10:00 /f
 
 echo Done.
 endlocal

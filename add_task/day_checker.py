@@ -31,12 +31,25 @@ def load_ODS(file_path):
     return doc
 
 
+def calc_repeated_offset(cells, col_pos):
+    offset = 0
+    i = 0 
+    while i < col_pos:
+        r_cols = cells[i].getAttribute("numbercolumnsrepeated")
+        if r_cols is not None:
+            offset += int(r_cols) - 1
+            col_pos -= offset
+        i += 1
+    return offset
+
 def get_cell(sheet, col_pos, row_pos):
     rows = sheet.getElementsByType(TableRow)
     if row_pos < len(rows): 
         row = rows[row_pos] 
         cells = row.getElementsByType(TableCell)
-        if col_pos < len(cells):
+        # calc offset for repeated columns
+        col_pos = col_pos - calc_repeated_offset(cells, col_pos)
+        if col_pos >=0 and col_pos < len(cells):
             return cells[col_pos]
        
     return None
@@ -53,11 +66,11 @@ def find_day_pos(sheet, date_obj):
     col = col + date_obj.weekday()
   
     for i in range(0,4):
-        row = row+1
         day_cell = get_cell(sheet,col,row)
         day = teletype.extractText(day_cell)
         if int(day) == date_obj.day:
             return col, row
+        row = row+1
 
     return None
 
