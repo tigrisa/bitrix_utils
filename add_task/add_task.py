@@ -74,18 +74,18 @@ def main():
         wait(args.randdelay)
 
     # Run the day_checker and get a day type
-    day_type = run_script("day_checker.exe", ["--date", date_str])
+    day_type = run_script("day_checker", ["--date", date_str])
 
     if day_type in ["workday", "shortened_workday"]:
         # Check if the record for today already exists
-        last_records = run_script("tasks.exe", ["--list", "10"])
+        last_records = run_script("tasks", ["--list", "10"])
         
         if date_str not in last_records:
             hours = "8" if day_type == "workday" else "7"
             # Add a task for today
             at_time = datetime.datetime.now().strftime("%H:%M:%S")
             logger.info(f"Adding a task for {date_str} at {at_time} for {hours} hours.")
-            run_script("tasks.exe", ["--date", date_str, "--time", hours, "--attime", at_time])
+            run_script("tasks", ["--date", date_str, "--time", hours, "--attime", at_time])
 
 if __name__ == "__main__":
     main()

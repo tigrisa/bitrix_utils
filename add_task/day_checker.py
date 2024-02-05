@@ -68,7 +68,7 @@ def find_day_pos(sheet, date_obj):
     for i in range(0,4):
         day_cell = get_cell(sheet,col,row)
         day = teletype.extractText(day_cell)
-        if int(day) == date_obj.day:
+        if day != '' and int(day) == date_obj.day:
             return col, row
         row = row+1
 
