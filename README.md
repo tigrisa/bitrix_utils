@@ -6,7 +6,8 @@
 
 You can automate this routine by adding a scheduler. For Windows, use the make_scheduler.bat file. For Linux, use the make_scheduler.sh file
 
-The scheduler will execute `add_task --date today --randdelay 59` every day at 17:00
+The win scheduler will execute `add_task --date=today --randdelay=59` every day at 17:00
+The linux scheduler will execute `add_task --date=today` with 15 minutes jitter
 
 # Prerequisites
 
@@ -17,13 +18,14 @@ The scheduler will execute `add_task --date today --randdelay 59` every day at 1
     -   `task`
     -   `crm`
 
--   Create `credentials.json` with the following contents:
-    ```json
-    {
-        "USER_ID": "userId",
-        "SECRET": "token"
-    }
-    ```
+    -   DEPRECATED Create `credentials.json` with the following contents:
+        ```json
+        {
+            "USER_ID": "userId",
+            "SECRET": "token"
+        }
+        ```
+
 -   Add this file to the root project directory
 -   Install python, pip and pipx
     -   For win: pip install pipx
@@ -45,20 +47,21 @@ or just run make_scheduler.\* file
 -   To run the script manually, use the following command:
 
 ```bash
-add_task --date [DATE] --randdelay [MINUTES]
+add_task --date [DATE] --randdelay [MINUTES] --taskid [ID]
 ```
 
 ### Parameters
 
 -   `--date` - The date for which the task needs to be added. Use 'today' for the current date. Format: YYYY-MM-DD.
 -   `--randdelay` - The number of minutes for a random delay before executing the script. This is useful for preventing simultaneous execution when scheduled.
+-   `--taskid` - The taskId number for the tasks util.
 
 ### Examples
 
 Run the script to add a task for today with a 5-minute delay:
 
 ```bash
-add_task --date today --randdelay 5
+add_task --date today --randdelay 5 --taskid 65784
 ```
 
 ## Logging

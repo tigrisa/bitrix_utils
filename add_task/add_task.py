@@ -56,6 +56,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", help="date in format YYYY-MM-DD or 'today'")
     parser.add_argument("--randdelay", help="quantity of minutes while script will sleep")
+    parser.add_argument("--taskid", default="63765", type=str, help="bitrix taskId")
+
     args = parser.parse_args()
 
     if args.date is not None:
@@ -78,14 +80,14 @@ def main():
 
     if day_type in ["workday", "shortened_workday"]:
         # Check if the record for today already exists
-        last_records = run_script("tasks", ["--list", "10"])
+        last_records = run_script("tasks", ["--list", "10", "--taskid", args.taskid])
         
         if date_str not in last_records:
             hours = "8" if day_type == "workday" else "7"
             # Add a task for today
             at_time = datetime.datetime.now().strftime("%H:%M:%S")
             logger.info(f"Adding a task for {date_str} at {at_time} for {hours} hours.")
-            run_script("tasks", ["--date", date_str, "--time", hours, "--attime", at_time])
+            run_script("tasks", ["--date", date_str, "--time", hours, "--attime", at_time, "--taskid", args.taskid])
 
 if __name__ == "__main__":
     main()

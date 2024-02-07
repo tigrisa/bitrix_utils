@@ -1,23 +1,17 @@
 #!/bin/bash
 
-TASK_NAME="bitrix_task"
-SERVICE_FILE_NAME="add_task.service"
-RUN_SCRIPT_NAME="run_add_task.sh"
+# Деинсталляция add_task через pipx
+echo "Uninstalling the add_task project using pipx..."
+pipx uninstall add_task
 
-# Stop and disable the service
-echo "Stopping and disabling the service..."
-sudo systemctl stop $TASK_NAME.service
-sudo systemctl disable $TASK_NAME.service
+# Удаление скрипта из целевой директории
+TARGET_DIR="${HOME}/.local/opt/add_task_script"
+echo "Removing script from ${TARGET_DIR}..."
+rm -rf "$TARGET_DIR"
 
-# Remove the service file from /etc/systemd/system/
-echo "Removing the systemd service file..."
-sudo rm /etc/systemd/system/$SERVICE_FILE_NAME
+# Удаление задач из crontab
+echo "Cleaning up crontab..."
+(crontab -l | grep -v "$TARGET_DIR/run_task.sh" | crontab -)
+(crontab -l | grep -v "/usr/sbin/anacron" | crontab -)
 
-# Reload systemd to apply changes
-sudo systemctl daemon-reload
-
-# Remove the run script
-echo "Removing the run script..."
-rm $RUN_SCRIPT_NAME
-
-echo "Uninstallation completed."
+echo "Cleanup complete."

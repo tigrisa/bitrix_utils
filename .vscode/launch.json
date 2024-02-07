@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Python: Day Checker",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/add_task/day_checker.py",
             "console": "integratedTerminal",
@@ -12,11 +12,11 @@
         },
         {
             "name": "Python: Add Task",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/add_task/add_task.py",
             "console": "integratedTerminal",
-            "args": ["--date", "2024-01-16", "--randdelay", "3"],
+            "args": ["--date", "2024-01-16"],
             "cwd": "${workspaceFolder}"
         }
     ]
