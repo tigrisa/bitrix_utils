@@ -1,10 +1,5 @@
 #!/bin/bash
 
-TASK_NAME="bitrix_task"
-SERVICE_FILE_NAME="add_task.service"
-RUN_SCRIPT_NAME="run_add_task.sh"
-EXECUTABLE_NAME="add_task"
-
 # Is pipx installed?
 # You have to install it mannualy
 if ! command -v pipx &> /dev/null; then
@@ -17,44 +12,49 @@ fi
 echo "Installing the add_task project using pipx..."
 pipx install .
 
-# Create a run add_task script...
-echo "Creating the run script..."
-cat > $RUN_SCRIPT_NAME <<EOF
-#!/bin/bash
+# Определение пути к целевой директории
+TARGET_DIR="${HOME}/.local/opt/add_task_script"
 
-# Get the full path to the directory containing this script
-WORKING_DIR=\$(dirname "\$(realpath "\$0")")
+# Проверка существования директории и создание, если не существует
+if [ ! -d "$TARGET_DIR" ]; then
+    mkdir -p "$TARGET_DIR"
+fi
 
-# Go to the working directory
-cd "\$WORKING_DIR" || exit
+# Путь к исходному скрипту
+SOURCE_SCRIPT="run_task.sh"
 
-# Execute the task
-$EXECUTABLE_NAME --date today --randdelay 59
-EOF
+# Копирование скрипта в целевую директорию
+cp "$SOURCE_SCRIPT" "$TARGET_DIR"
+
+# Делаем скрипт исполняемым
+chmod +x "${TARGET_DIR}/run_task.sh"
+
+echo "Скрипт успешно скопирован в ${TARGET_DIR}/run_task.sh"
 
 
-# Make exec script executable
-chmod +x $RUN_SCRIPT_NAME
+(crontab -l 2>/dev/null; echo "0 10 * * * $TARGET_DIR/run_task.sh > ${HOME}/logfile.log 2>&1") | crontab -
+mkdir -p ~/.local/var/spool/anacron 
+mkdir -p ~/.local/etc && cp /etc/anacrontab ~/.local/etc
+(crontab -l 2>/dev/null; echo "0 * * * *  /usr/sbin/anacron -s -t \"${HOME}/.local/etc/anacrontab\" -S \"${HOME}/.local/var/spool/anacron\"") | crontab -
 
-# Create a unit systemd file
-echo "Creating the systemd service file..."
-cat > $SERVICE_FILE_NAME <<EOF
-[Unit]
-Description=$TASK_NAME Service
 
-[Service]
-ExecStart=\$(pwd)/$RUN_SCRIPT_NAME
+ANACRONTAB_FILE="${HOME}/.local/etc/anacrontab"
+USERNAME=$(whoami)
 
-[Install]
-WantedBy=multi-user.target
-EOF
+# Проверяем и обновляем HOME, если необходимо
+if grep -q "HOME=" "$ANACRONTAB_FILE"; then
+    # Если строка с HOME найдена, обновляем ее
+    sed -i "s|HOME=.*|HOME=${HOME}|g" "$ANACRONTAB_FILE"
+else
+    # Если строка с HOME не найдена, добавляем ее
+    echo "HOME=${HOME}" >> "$ANACRONTAB_FILE"
+fi
 
-# Copy the service file to /etc/systemd/system/
-sudo cp $SERVICE_FILE_NAME /etc/systemd/system/
-
-# Enable and start the service
-echo "Enabling and starting the service..."
-sudo systemctl enable $TASK_NAME.service
-sudo systemctl start $TASK_NAME.service
-
-echo "Installation completed."
+# Проверяем и обновляем LOGNAME, если необходимо
+if grep -q "LOGNAME=" "$ANACRONTAB_FILE"; then
+    # Если строка с LOGNAME найдена, обновляем ее
+    sed -i "s|LOGNAME=.*|LOGNAME=${USERNAME}|g" "$ANACRONTAB_FILE"
+else
+    # Если строка с LOGNAME не найдена, добавляем ее
+    echo "LOGNAME=${USERNAME}" >> "$ANACRONTAB_FILE"
+fi
