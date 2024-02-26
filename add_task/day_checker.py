@@ -27,13 +27,13 @@ def load_ODS(file_path):
         logger.error(f"You don't have rights for reading the file {file_path}.")
     except Exception as e:
         logger.error(f"An error has occurred while loading the file: {e}")
-            
+
     return doc
 
 
 def calc_repeated_offset(cells, col_pos):
     offset = 0
-    i = 0 
+    i = 0
     while i < col_pos:
         r_cols = cells[i].getAttribute("numbercolumnsrepeated")
         if r_cols is not None:
@@ -42,56 +42,59 @@ def calc_repeated_offset(cells, col_pos):
         i += 1
     return offset
 
+
 def get_cell(sheet, col_pos, row_pos):
     rows = sheet.getElementsByType(TableRow)
-    if row_pos < len(rows): 
-        row = rows[row_pos] 
+    if row_pos < len(rows):
+        row = rows[row_pos]
         cells = row.getElementsByType(TableCell)
         # calc offset for repeated columns
         col_pos = col_pos - calc_repeated_offset(cells, col_pos)
-        if col_pos >=0 and col_pos < len(cells):
+        if col_pos >= 0 and col_pos < len(cells):
             return cells[col_pos]
-       
+
     return None
 
-    
+
 def calc_month_pos(date_obj):
-    x = (date_obj.month - 1) % 3 # mod
-    y = (date_obj.month - 1) // 3 # div
-    return (1+x*9,3+y*9)
+    x = (date_obj.month - 1) % 3  # mod
+    y = (date_obj.month - 1) // 3  # div
+    return (1 + x * 9, 3 + y * 9)
 
 
 def find_day_pos(sheet, date_obj):
     col, row = calc_month_pos(date_obj)
     col = col + date_obj.weekday()
-  
-    for i in range(0,4):
-        day_cell = get_cell(sheet,col,row)
+
+    for i in range(0, 5):
+        day_cell = get_cell(sheet, col, row)
         day = teletype.extractText(day_cell)
-        if day != '' and int(day) == date_obj.day:
+        if day != "" and int(day) == date_obj.day:
             return col, row
-        row = row+1
+        row = row + 1
 
     return None
 
+
 from enum import Enum
+
 
 class DayType(Enum):
     workday = 0
     day_off = 1
     shortened_workday = 2
     vacation_day = 3
-    unknown_day = 4        
-    
+    unknown_day = 4
+
 
 def determine_day_type_by_color(color):
     color_to_day_type = {
-        "#ffa6a6": DayType.day_off, # light red 2
-        "#b4c7dc": DayType.shortened_workday, # light blue 2
-        "#77bc65": DayType.vacation_day # light green 2
+        "#ffa6a6": DayType.day_off,  # light red 2
+        "#b4c7dc": DayType.shortened_workday,  # light blue 2
+        "#77bc65": DayType.vacation_day,  # light green 2
     }
 
-    return color_to_day_type.get(color, "unknown_day")   
+    return color_to_day_type.get(color, "unknown_day")
 
 
 def get_day_type(doc, cell):
@@ -108,28 +111,28 @@ def get_day_type(doc, cell):
     # If the style is found, extract the background color
     if cell_style:
         for child_nodes in cell_style.childNodes:
-           background_color = child_nodes.getAttribute("backgroundcolor")
-           if background_color:
+            background_color = child_nodes.getAttribute("backgroundcolor")
+            if background_color:
                 return determine_day_type_by_color(background_color)
-           
+
     return DayType.workday
 
-    
+
 # Function to check the day type from an ODS file
 def check_day_type_ods(file_path, date_obj):
 
     doc = load_ODS(file_path)
     # a first table in the ODS document
     sheet = doc.spreadsheet.getElementsByType(Table)[0]
-    if ( sheet ):
+    if sheet:
         pos = find_day_pos(sheet, date_obj)
         if pos:
-            return get_day_type(doc, get_cell(sheet, pos[0],pos[1]))
+            return get_day_type(doc, get_cell(sheet, pos[0], pos[1]))
 
     return DayType.unknown_day
 
 
-def main():   
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", help="date in format YYYY-MM-DD or 'today'")
     args = parser.parse_args()
@@ -143,9 +146,9 @@ def main():
         # If there is an error parsing the date, return unknown_day for error
         print(DayType.unknown_day.name)
         return 1
-    
+
     # Relative path to the file
-    ods_relative_path = 'calendar_2024.ods'
+    ods_relative_path = "calendar_2024.ods"
 
     # Absolute path to the file
     ods_absolute_path = os.path.join(os.path.dirname(__file__), ods_relative_path)
@@ -154,11 +157,11 @@ def main():
     date_object = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
     day_type = check_day_type_ods(ods_absolute_path, date_object)
     print(day_type.name)
-    if ( day_type != DayType.unknown_day ):
+    if day_type != DayType.unknown_day:
         return 0
     else:
         return 1
 
+
 if __name__ == "__main__":
     main()
-    
