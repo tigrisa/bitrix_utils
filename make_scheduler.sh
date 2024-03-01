@@ -58,3 +58,12 @@ else
     # Если строка с LOGNAME не найдена, добавляем ее
     echo "LOGNAME=${USERNAME}" >> "$ANACRONTAB_FILE"
 fi
+
+# Проверяем и обновляем RANDOM_DELAY, если необходимо
+if grep -q "RANDOM_DELAY=" "$ANACRONTAB_FILE"; then
+    # Если строка с RANDOM_DELAY найдена, обновляем ее
+    sed -i "s|RANDOM_DELAY=.*|RANDOM_DELAY=15|g" "$ANACRONTAB_FILE"
+else
+    # Если строка с LOGNAME не найдена, добавляем ее
+    echo "RANDOM_DELAY=15" >> "$ANACRONTAB_FILE"
+fi
