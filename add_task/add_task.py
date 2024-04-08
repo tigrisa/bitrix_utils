@@ -3,7 +3,7 @@ import datetime
 import argparse
 
 
-from .logger import Logger
+from add_task.logger import Logger
 
 # logger init
 logger = Logger().get_logger()
@@ -60,7 +60,7 @@ def main():
     parser.add_argument(
         "--randdelay", help="quantity of minutes while script will sleep"
     )
-    parser.add_argument("--taskid", default="63765", type=str, help="bitrix taskId")
+    parser.add_argument("--taskid", default="63718", type=str, help="bitrix taskId")
 
     args = parser.parse_args()
 

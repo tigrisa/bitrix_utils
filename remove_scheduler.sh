@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: расширить. В установке планировщика делается гораздо больше вещей
+
 # Деинсталляция add_task через pipx
 echo "Uninstalling the add_task project using pipx..."
 pipx uninstall add_task

@@ -8,7 +8,7 @@ import argparse
 import os
 
 
-from .logger import Logger
+from add_task.logger import Logger
 
 # logger init
 logger = Logger().get_logger()
