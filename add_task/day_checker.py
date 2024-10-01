@@ -157,7 +157,9 @@ def main():
     # Convert date from str to obj
     date_object = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
     day_type = check_day_type_ods(ods_absolute_path, date_object)
-
+    print(
+        day_type.name
+    )  # это надо вывести в stdout, потому что я потом именно его и анализирую
     if day_type != DayType.unknown_day:
         logger.info(f"Day type: {day_type.name}")
         return 0
