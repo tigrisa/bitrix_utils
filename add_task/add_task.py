@@ -60,7 +60,7 @@ def main():
     parser.add_argument(
         "--randdelay", help="quantity of minutes while script will sleep"
     )
-    parser.add_argument("--taskid", default="63718", type=str, help="bitrix taskId")
+    parser.add_argument("--taskid", default="77957", type=str, help="bitrix taskId")
 
     args = parser.parse_args()
 
@@ -81,7 +81,6 @@ def main():
 
     # Run the day_checker and get a day type
     day_type = run_script("day_checker", ["--date", date_str])
-
     if day_type in ["workday", "shortened_workday"]:
         # Check if the record for today already exists
         last_records = run_script("tasks", ["--list", "10", "--taskid", args.taskid])
@@ -104,6 +103,8 @@ def main():
                     args.taskid,
                 ],
             )
+        else:
+            logger.info(f"A task for {date_str} already exists.")
 
 
 if __name__ == "__main__":
