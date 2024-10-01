@@ -66,7 +66,7 @@ def find_day_pos(sheet, date_obj):
     col, row = calc_month_pos(date_obj)
     col = col + date_obj.weekday()
 
-    for i in range(0, 5):
+    for i in range(0, 6):
         day_cell = get_cell(sheet, col, row)
         day = teletype.extractText(day_cell)
         if day != "" and int(day) == date_obj.day:
@@ -92,6 +92,7 @@ def determine_day_type_by_color(color):
         "#ffa6a6": DayType.day_off,  # light red 2
         "#b4c7dc": DayType.shortened_workday,  # light blue 2
         "#77bc65": DayType.vacation_day,  # light green 2
+        "transparent": DayType.workday,  # transparent либо без стиля, обработается выше
     }
 
     return color_to_day_type.get(color, "unknown_day")
@@ -156,10 +157,12 @@ def main():
     # Convert date from str to obj
     date_object = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
     day_type = check_day_type_ods(ods_absolute_path, date_object)
-    print(day_type.name)
+
     if day_type != DayType.unknown_day:
+        logger.info(f"Day type: {day_type.name}")
         return 0
     else:
+        logger.error(f"Day type: {day_type.name}")
         return 1
 
 
